@@ -55,11 +55,14 @@ Dockerized React.js application.
 Components for the main app, input forms, and movie list.
 Service configuration for API communication.
 Public directory with static assets.
-Common:
 
-> Docker-compose file for orchestrating backend and frontend containers.
-> README file for project documentation.
-> 'img' directory with an image file.
+> Common:
+
+![Common Files](./img/1g.png)
+
+Docker-compose file for orchestrating backend and frontend containers.
+README file for project documentation.
+'img' directory with an image file.
 
 ## What is a Docker Compose File
 
