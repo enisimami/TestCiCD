@@ -1,52 +1,25 @@
-name: Docker Image CI
- 
+name: Build and Push Docker Image
+
 on:
   push:
     branches: [ "main" ]
-    # tags:
-      # - 'v*'  # Trigger for version tags like v1.0.0
-  # pull_request:
-    # branches: [ "main" ]
- 
+  workflow_dispatch:
+
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
- 
+
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
- 
-    - name: Build Docker Image
-      run: |
-        IMAGE_TAG="ghcr.io/cloudbench1/simplenodeapp:${{ github.sha }}"
-        # Check if this is a tag push (e.g., v1.0.0)
-        if [ "${{ github.ref_type }}" = "tag" ]; then
-          VERSION_TAG="ghcr.io/cloudbench1/simplenodeapp:${{ github.ref_name }}"
-          docker build . --tag $IMAGE_TAG --tag $VERSION_TAG
-        else
-          docker build . --tag $IMAGE_TAG
-        fi
- 
-    - name: Push Docker Image
-      run: |
-        IMAGE_TAG="ghcr.io/cloudbench1/simplenodeapp:${{ github.sha }}"
-        # Push the SHA-tagged image
-        docker push $IMAGE_TAG
-        # If this is a version tag, push that too
-        if [ "${{ github.ref_type }}" = "tag" ]; then
-          VERSION_TAG="ghcr.io/cloudbench1/simplenodeapp:${{ github.ref_name }}"
-          docker push $VERSION_TAG
-        fi
- 
-    - name: Notify via Email on Success
-      if: success()
-      uses: dawidd6/action-send-mail@v3
-      with:
-        server_address: smtp.gmail.com
-        server_port: 587
-        username: ${{ secrets.EMAIL_USERNAME }}
-        password: ${{ secrets.EMAIL_PASSWORD }}
-        subject: "Docker Build Success - SimpleNodeApp"
-        to: "flandercanaj18@gmail.com"
-        from: "GitHub Actions"
-        body: "The DOCKER IMAGE for SimpleNodeApp has been successfully built and pushed to GitHub Packages."
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GH_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build . -t ghcr.io/enisimami/enisi_test:latest
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/enisimami/enisi_test:latest
