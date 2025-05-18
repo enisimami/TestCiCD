@@ -16,9 +16,6 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
  
-    - name: Log in to GitHub Container Registry
-      run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u cloudbench1 --password-stdin
- 
     - name: Build Docker Image
       run: |
         IMAGE_TAG="ghcr.io/cloudbench1/simplenodeapp:${{ github.sha }}"
